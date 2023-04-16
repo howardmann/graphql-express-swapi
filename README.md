@@ -170,11 +170,22 @@ const root = {
       residents: fetchResources(data.residents, "Person")
     }
   },
+  // fetch allPlanets and associated residents and map them to Person schema
   allPlanets: async () => {
     const response = await axios.get(URL.planets)
-    const data = response.data
-    return data.results
-  },
+    const data = response.data.results
+    const planets = await Promise.all(data.map(async (planet) => {
+      const residents = await fetchResources(planet.residents, 'Person')
+      return {
+        name: planet.name,
+        diameter: planet.diameter,
+        climate: planet.climate,
+        terrain: planet.terrain,
+        residents
+      }
+    }))
+    return planets
+  },  
   person: async ({id}) => {
     const response = await axios.get(`${URL.people}/${id}`)
     const data = response.data
