@@ -3,14 +3,16 @@ const {graphqlHTTP} = require('express-graphql')
 const {buildSchema} = require('graphql')
 const axios = require('axios')
 
-// SWAPI url endpoints
+// SWAPI REST API endpoints
 const URL = {
   planets: 'https://swapi.dev/api/planets',
   people: 'https://swapi.dev/api/people',
   starships: 'https://swapi.dev/api/starships'
 }
 
-// graphQL schema
+// GraphQL schema
+// type <Resource>: resources and properties we want to expose via GraphQL including their relatonships
+// type <Query>: query params and dynamic properties passed to access Resource
 const schema = buildSchema(`
   type Planet {
     name: String, 
@@ -33,7 +35,8 @@ const schema = buildSchema(`
   }
 `)
 
-// graphQL root resolver
+// GraphQL root resolver
+// type <Query> properties map to root object passing in dyanmic properties and resolves to type <Resource>
 const root = {
   planet: async ({id}) => {
     const response = await axios.get(`${URL.planets}/${id}`)
@@ -62,7 +65,8 @@ const root = {
   }
 }
 
-// helper function to fetch url and return response and add a __typename property which is used by some GraphQL clients like Apollo
+// Helper function when we need to fetch a related resource
+// fetch url and return response and add a __typename property which is used by some GraphQL clients like Apollo
 const fetchResource = async (url, type) => {
   const response = await axios.get(url)
   const data = response.data
