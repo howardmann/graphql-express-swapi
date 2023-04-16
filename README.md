@@ -60,6 +60,7 @@ This returns all the properties of the planet and all the associated resident ur
     ], 
 ```
 Next we would need to fetch each of the 10 people via the people REST endpoint returning all the details of the person.
+`GET https://swapi.dev/api/people/1/`
 
 ```json
 {
